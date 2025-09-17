@@ -1,0 +1,143 @@
+<%- include('../../partials/header', {title: 'Doctor Dashboard'}) %>
+
+<main class="main-content">
+    <div class="page-header">
+        <h1><i class="fas fa-clipboard-list"></i> Doctor Dashboard</h1>
+        <p>Manage your appointments and patient requests</p>
+    </div>
+
+    <div class="dashboard-stats">
+        <div class="stat-card">
+            <i class="fas fa-clock text-warning"></i>
+            <div class="stat-info">
+                <h3><%= appointments.filter(a => a.status === 'pending').length %></h3>
+                <p>Pending</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <i class="fas fa-check-circle text-success"></i>
+            <div class="stat-info">
+                <h3><%= appointments.filter(a => a.status === 'accepted').length %></h3>
+                <p>Accepted</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <i class="fas fa-times-circle text-danger"></i>
+            <div class="stat-info">
+                <h3><%= appointments.filter(a => a.status === 'rejected').length %></h3>
+                <p>Rejected</p>
+            </div>
+        </div>
+        <div class="stat-card">
+            <i class="fas fa-calendar-check text-info"></i>
+            <div class="stat-info">
+                <h3><%= appointments.length %></h3>
+                <p>Total</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="appointments-section">
+        <h2><i class="fas fa-list"></i> All Appointments</h2>
+        
+        <% if (appointments.length === 0) { %>
+            <div class="no-appointments">
+                <i class="fas fa-calendar-alt"></i>
+                <h3>No appointments found</h3>
+                <p>You don't have any appointments yet.</p>
+            </div>
+        <% } else { %>
+            <div class="appointments-table-container">
+                <table class="appointments-table">
+                    <thead>
+                        <tr>
+                            <th>Patient</th>
+                            <th>Doctor</th>
+                            <th>Date & Time</th>
+                            <th>Symptoms</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% appointments.forEach(appointment => { %>
+                            <tr class="appointment-row" data-id="<%= appointment.id %>">
+                                <td>
+                                    <div class="patient-info">
+                                        <strong><%= appointment.patient_name %></strong>
+                                        <br>
+                                        <small><i class="fas fa-phone"></i> <%= appointment.patient_phone %></small>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="doctor-info">
+                                        <strong><%= appointment.doctor_name %></strong>
+                                        <br>
+                                        <small><%= appointment.specialization %></small>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="datetime-info">
+                                        <strong><%= appointment.appointment_date %></strong>
+                                        <br>
+                                        <small><i class="fas fa-clock"></i> <%= appointment.appointment_time %></small>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="symptoms-info">
+                                        <%= appointment.symptoms || 'Not specified' %>
+                                    </div>
+                                </td>
+                                <td>
+                                    <span class="status-badge status-<%= appointment.status %>">
+                                        <% if (appointment.status === 'pending') { %>
+                                            <i class="fas fa-clock"></i> Pending
+                                        <% } else if (appointment.status === 'accepted') { %>
+                                            <i class="fas fa-check-circle"></i> Accepted
+                                        <% } else if (appointment.status === 'rejected') { %>
+                                            <i class="fas fa-times-circle"></i> Rejected
+                                        <% } %>
+                                    </span>
+                                </td>
+                            </tr>
+                        <% }) %>
+                    </tbody>
+                </table>
+            </div>
+        <% } %>
+    </div>
+</main>
+
+<script>
+function updateStatus(appointmentId, status) {
+    if (!confirm(`Are you sure you want to ${status} this appointment?`)) {
+        return;
+    }
+    
+    fetch('/doctor/api/update-appointment', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+            appointmentId: appointmentId,
+            status: status
+        })
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('✅ ' + data.message);
+            location.reload(); // Refresh the page to show updated status
+        } else {
+            alert('❌ ' + (data.error || 'Failed to update appointment'));
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('❌ Network error. Please try again.');
+    });
+}
+</script>
+
+<%- include('../../partials/footer') %>

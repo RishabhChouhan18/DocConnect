@@ -1,0 +1,112 @@
+<%- include('../../partials/header', {title: 'Find Doctors'}) %>
+
+<main class="main-content">
+    <div class="page-header">
+        <h1><i class="fas fa-search"></i> Find Doctors</h1>
+        <p>Search and book appointments with qualified doctors</p>
+    </div>
+
+    <!-- Filters Section -->
+    <div class="filters-section">
+        <form id="filterForm" class="filters-form">
+            <div class="filter-group">
+                <label for="location"><i class="fas fa-map-marker-alt"></i> Location:</label>
+                <select name="location" id="location">
+                    <option value="">All Locations</option>
+                    <% locations.forEach(loc => { %>
+                        <option value="<%= loc.location %>" <%= selectedLocation === loc.location ? 'selected' : '' %>>
+                            <%= loc.location %>
+                        </option>
+                    <% }) %>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label for="specialization"><i class="fas fa-stethoscope"></i> Specialization:</label>
+                <select name="specialization" id="specialization">
+                    <option value="">All Specializations</option>
+                    <% specializations.forEach(spec => { %>
+                        <option value="<%= spec.specialization %>" <%= selectedSpecialization === spec.specialization ? 'selected' : '' %>>
+                            <%= spec.specialization %>
+                        </option>
+                    <% }) %>
+                </select>
+            </div>
+            
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-filter"></i> Apply Filters
+            </button>
+        </form>
+    </div>
+
+    <!-- Doctors Grid -->
+    <div class="doctors-grid">
+        <% if (doctors.length === 0) { %>
+            <div class="no-results">
+                <i class="fas fa-search"></i>
+                <h3>No doctors found</h3>
+                <p>Try adjusting your filters or search criteria</p>
+            </div>
+        <% } else { %>
+            <% doctors.forEach(doctor => { %>
+                <div class="doctor-card">
+                    <div class="doctor-info">
+                        <div class="doctor-avatar">
+                            <i class="fas fa-user-md"></i>
+                        </div>
+                        <div class="doctor-details">
+                            <h3><%= doctor.name %></h3>
+                            <p class="specialization">
+                                <i class="fas fa-stethoscope"></i> <%= doctor.specialization %>
+                            </p>
+                            <p class="location">
+                                <i class="fas fa-map-marker-alt"></i> <%= doctor.location %>
+                            </p>
+                            <p class="phone">
+                                <i class="fas fa-phone"></i> <%= doctor.phone %>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="doctor-status">
+                        <span class="status-badge <%= doctor.available ? 'available' : 'unavailable' %>">
+                            <i class="fas <%= doctor.available ? 'fa-circle-check' : 'fa-circle-xmark' %>"></i>
+                            <%= doctor.available ? 'Available' : 'Not Available' %>
+                        </span>
+                    </div>
+                    <div class="doctor-actions">
+                        <% if (doctor.available) { %>
+                            <a href="/patient/book/<%= doctor.id %>" class="btn btn-primary">
+                                <i class="fas fa-calendar-plus"></i> Book Appointment
+                            </a>
+                        <% } else { %>
+                            <button class="btn btn-disabled" disabled>
+                                <i class="fas fa-ban"></i> Not Available
+                            </button>
+                        <% } %>
+                    </div>
+                </div>
+            <% }) %>
+        <% } %>
+    </div>
+</main>
+
+<script>
+// Handle filter form submission
+document.getElementById('filterForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    
+    const location = document.getElementById('location').value;
+    const specialization = document.getElementById('specialization').value;
+    
+    let url = '/patient/doctors?';
+    const params = [];
+    
+    if (location) params.push(`location=${encodeURIComponent(location)}`);
+    if (specialization) params.push(`specialization=${encodeURIComponent(specialization)}`);
+    
+    url += params.join('&');
+    window.location.href = url;
+});
+</script>
+
+<%- include('../../partials/footer') %>

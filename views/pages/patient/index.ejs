@@ -1,0 +1,62 @@
+<%- include('../../partials/header', {title: 'Patient Home'}) %>
+
+<main class="main-content">
+    <div class="hero-section">
+        <div class="hero-content">
+            <h1><i class="fas fa-heart-pulse"></i> Welcome to DocConnect+</h1>
+            <p class="hero-subtitle">Book appointments with qualified doctors near you</p>
+            <div class="hero-features">
+                <div class="feature">
+                    <i class="fas fa-search"></i>
+                    <h3>Find Doctors</h3>
+                    <p>Search by location and specialization</p>
+                </div>
+                <div class="feature">
+                    <i class="fas fa-calendar-check"></i>
+                    <h3>Easy Booking</h3>
+                    <p>Book appointments in just a few clicks</p>
+                </div>
+                <div class="feature">
+                    <i class="fas fa-robot"></i>
+                    <h3>AI Assistant</h3>
+                    <p>Get doctor suggestions based on symptoms</p>
+                </div>
+            </div>
+            <div class="hero-buttons">
+                <a href="/patient/doctors" class="btn btn-primary">
+                    <i class="fas fa-search"></i> Find Doctors
+                </a>
+                <a href="/chatbot" class="btn btn-secondary">
+                    <i class="fas fa-comments"></i> Ask Chatbot
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <section class="stats-section">
+        <div class="stats-container">
+            <div class="stat-item">
+                <i class="fas fa-user-md"></i>
+                <h3>50+</h3>
+                <p>Qualified Doctors</p>
+            </div>
+            <div class="stat-item">
+                <i class="fas fa-calendar-check"></i>
+                <h3>1000+</h3>
+                <p>Appointments Booked</p>
+            </div>
+            <div class="stat-item">
+                <i class="fas fa-clock"></i>
+                <h3>24/7</h3>
+                <p>Support Available</p>
+            </div>
+            <div class="stat-item">
+                <i class="fas fa-star"></i>
+                <h3>4.9</h3>
+                <p>Average Rating</p>
+            </div>
+        </div>
+    </section>
+</main>
+
+<%- include('../../partials/footer') %>
