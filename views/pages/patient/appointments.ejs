@@ -1,0 +1,101 @@
+<%- include('../../partials/header', { title: 'My Appointments' }) %>
+
+<main class="main-content appointments-page">
+
+  <header class="page-head">
+    <div>
+      <h1><i class="fas fa-calendar-check"></i> My Appointments</h1>
+      <p class="muted">See your complete appointment history.</p>
+    </div>
+    <div class="head-actions">
+      <a href="/patient/doctors" class="btn btn-primary"><i class="fas fa-plus"></i> Book New</a>
+    </div>
+  </header>
+
+  <section class="table-card">
+    <table class="nice-table">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Doctor</th>
+          <th>Specialization</th>
+          <th>Symptoms</th>
+          <th>Status</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        <% appointments.forEach(a => { %>
+
+          <tr id="row-<%= a.id %>">
+
+            <td>
+              <strong><%= a.appointment_date %></strong><br>
+              <small><i class="fas fa-clock"></i> <%= a.appointment_time %></small>
+            </td>
+
+            <td><%= a.doctor_name %></td>
+            <td><%= a.doctor_specialization %></td>
+            <td><%= a.symptoms || "-" %></td>
+
+            <td>
+              <span class="badge <%= a.status %>"><%= a.status %></span>
+            </td>
+
+            <td>
+              <% if (a.status === "pending") { %>
+                <button class="delete-btn" onclick="deleteAppointment(<%= a.id %>)">
+                  <i class="fas fa-trash"></i> Delete
+                </button>
+              <% } else { %>
+                <span class="text-muted">-</span>
+              <% } %>
+            </td>
+          </tr>
+
+        <% }) %>
+      </tbody>
+    </table>
+  </section>
+
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+function deleteAppointment(id) {
+  Swal.fire({
+    title: "Delete appointment?",
+    text: "This cannot be undone.",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#dc2626",
+    confirmButtonText: "Delete"
+  }).then(result => {
+    if (!result.isConfirmed) return;
+
+    fetch(`/patient/delete-appointment/${id}`, { method: "POST" })
+      .then(r => r.json())
+      .then(d => {
+        if (d.success) {
+
+          Swal.fire({
+            title: "Deleted!",
+            text: d.message,
+            icon: "success",
+            timer: 1200,
+            showConfirmButton: false
+          });
+
+          document.getElementById("row-" + id)?.remove();
+          
+        } else {
+          Swal.fire("Error", d.message, "error");
+        }
+      });
+  });
+}
+</script>
+
+<%- include('../../partials/footer') %>

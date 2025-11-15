@@ -1,0 +1,157 @@
+<%- include('../../partials/header', { title: "Notifications" }) %>
+
+<style>
+    .notif-container {
+        max-width: 750px;
+        margin: 30px auto;
+        background: #fff;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0px 4px 12px rgba(0,0,0,0.1);
+    }
+
+    .notif-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .notif-list {
+        margin-top: 20px;
+        padding: 0;
+        list-style: none;
+    }
+
+    .notif-item {
+        padding: 15px;
+        margin-bottom: 12px;
+        background: #f5f7ff;
+        border-radius: 10px;
+        cursor: pointer;
+        border: 1px solid #e0e4ff;
+        transition: 0.25s;
+    }
+
+    .notif-item:hover {
+        background: #e8ecff;
+    }
+
+    .notif-item.unread {
+        background: #fff6d1;
+        border-left: 4px solid orange;
+    }
+
+    .notif-item .msg {
+        font-size: 15px;
+        font-weight: 600;
+        color: #333;
+    }
+
+    .notif-item small {
+        color: #777;
+    }
+
+    .video-icon {
+        color: #007BFF;
+        font-weight: bold;
+    }
+</style>
+
+<main class="notif-container">
+
+    <div class="notif-header">
+        <h2><i class="fas fa-bell"></i> Notifications</h2>
+    </div>
+
+    <% if (notifications.length === 0) { %>
+
+        <p>No notifications found.</p>
+
+    <% } else { %>
+
+        <ul class="notif-list">
+
+            <% notifications.forEach(n => { %>
+
+                <% 
+                    // ✅ Safe fallback object
+                    const safeData = (n.data && typeof n.data === "object") ? n.data : {};
+                %>
+
+                <li 
+                    class="notif-item <%= n.is_read ? '' : 'unread' %>"
+                   
+                    
+                >
+
+                    <div class="msg">
+                        <%= safeData.patient_name ? safeData.patient_name : "Unknown Patient" %> 
+                        booked an appointment
+
+                        <% if (safeData.is_video_call) { %>
+                            <span class="video-icon">🎥 (Video Call)</span>
+                        <% } %>
+                    </div>
+
+                    <small>
+                        <i class="far fa-calendar"></i> 
+                        <%= safeData.date ? safeData.date : "N/A" %>
+
+                        &nbsp;&nbsp;
+
+                        <i class="far fa-clock"></i>
+                        <%= safeData.time ? safeData.time : "N/A" %>
+                    </small>
+
+                </li>
+
+            <% }); %>
+
+        </ul>
+
+    <% } %>
+
+</main>
+
+<script>
+    /**
+     * ✅ When doctor clicks a notification:
+     * 1) Mark notification as read
+     * 2) Redirect to dashboard with highlight
+     */
+    function openAppointment(appointmentId, notifId) {
+
+        // ✅ Mark notification as read
+        fetch(`/doctor/api/notifications/${notifId}/read`, {
+            method: "POST"
+        }).finally(() => {
+
+            // ✅ Redirect to dashboard
+            if (appointmentId && appointmentId > 0) {
+                window.location.href = `/doctor/dashboard?highlight=${appointmentId}`;
+            } else {
+                window.location.href = `/doctor/dashboard`;
+            }
+        });
+    }
+</script>
+
+<%- include('../../partials/footer') %>
+<style>
+    html, body {
+        height: 100%;
+    }
+
+    body {
+        display: flex;
+        flex-direction: column;
+    }
+
+    main.notif-container {
+        flex: 1;
+    }
+
+    footer {
+        margin-top: auto;
+    }
+</style>

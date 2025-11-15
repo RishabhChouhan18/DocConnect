@@ -1,0 +1,91 @@
+<%- include('../partials/header', { title: 'Sign in' }) %>
+
+<main class="auth-wrapper">
+  <div class="auth-box">
+    <div class="auth-left">
+      <h1>DocConnect+</h1>
+      <p class="muted">Welcome back! Please enter your details.</p>
+      <ul class="feature-list">
+        <li>Search doctors & book slots</li>
+        <li>Reminders on WhatsApp</li>
+        <li>Secure records (coming soon)</li>
+      </ul>
+    </div>
+
+    <div class="auth-right">
+      <h2 class="auth-title"><i class="fas fa-sign-in-alt"></i> Sign in</h2>
+
+      <% if (typeof error !== 'undefined' && error) { %>
+        <div class="alert error"><%= error %></div>
+      <% } %>
+
+      <form action="/auth/login" method="POST" class="auth-form">
+        <input type="hidden" name="role" value="<%= (role || 'patient') %>">
+
+        <div class="field">
+          <label>Email</label>
+          <input type="email" name="email" placeholder="you@email.com" required>
+        </div>
+
+        <div class="field">
+          <label>Password</label>
+          <input type="password" name="password" placeholder="••••••••" minlength="6" required>
+        </div>
+
+        <div class="inline">
+          <div></div>
+          <a class="link-muted" href="/auth/login?role=<%= role || 'patient' %>">Forgot Password?</a>
+        </div>
+
+        <button class="btn btn-primary w-100" type="submit">Sign in</button>
+      </form>
+
+      <div class="switch">
+        Not an existing user? <a href="/auth/signup?role=<%= role || 'patient' %>">Create an account</a>
+      </div>
+
+      <div class="role-switch">
+        Sign in as:
+        <a class="chip <%= (role==='patient' || !role) ? 'active' : '' %>" href="/auth/login?role=patient">Patient</a>
+        <a class="chip <%= role==='doctor' ? 'active' : '' %>" href="/auth/login?role=doctor">Doctor</a>
+      </div>
+    </div>
+  </div>
+</main>
+
+<%- include('../partials/footer') %>
+
+<style>
+  .auth-wrapper{display:flex;justify-content:center;padding:2rem 1rem}
+  .auth-box{width:min(1000px,96vw);display:grid;grid-template-columns:1.1fr .9fr;background:#fff;border:1px solid #eee;border-radius:16px;box-shadow:0 10px 30px rgba(0,0,0,.06);overflow:hidden}
+  @media (max-width:900px){.auth-box{grid-template-columns:1fr}}
+  .auth-left{background:linear-gradient(160deg,#e8f5ff 0,#f7fbff 60%);padding:2rem}
+  .auth-left .muted{color:#4b5563;margin:.25rem 0 1rem}
+  .feature-list{margin:0;padding-left:1rem;line-height:1.8}
+  .auth-right{padding:2rem}
+  .auth-title{margin:0 0 1rem}
+  .field{display:flex;flex-direction:column;gap:.35rem;margin:.55rem 0}
+  .field input{padding:.65rem .75rem;border:1px solid #e5e7eb;border-radius:10px}
+  .field input:focus{border-color:#4f46e5;box-shadow:0 0 0 3px rgba(79,70,229,.15);outline:none}
+  .btn{display:inline-flex;align-items:center;gap:.5rem;border:0;border-radius:10px;padding:.7rem 1rem;cursor:pointer}
+  .btn-primary{background:#4f46e5;color:#fff}
+  .w-100{width:100%}
+  .inline{display:flex;justify-content:space-between;align-items:center;margin:.25rem 0 .75rem}
+  .link-muted{color:#6b7280;text-decoration:none}
+  .alert.error{background:#fee2e2;border:1px solid #fecaca;color:#991b1b;padding:.6rem .8rem;border-radius:10px;margin:.5rem 0}
+  .switch{margin-top:1rem}
+  .role-switch{margin-top:.75rem}
+  .chip{display:inline-block;margin-left:.25rem;padding:.25rem .6rem;border:1px solid #e5e7eb;border-radius:999px;text-decoration:none;color:#111}
+  .chip.active{background:#111;color:#fff;border-color:#111}
+
+</style>
+<style>
+  body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  main {
+    flex: 1; /* pushes footer to bottom */
+  }
+</style>

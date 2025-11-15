@@ -1,0 +1,4 @@
+node_modules/
+.env
+docconnect.db-shm
+docconnect.db-wal

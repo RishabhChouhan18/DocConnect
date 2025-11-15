@@ -1,0 +1,142 @@
+<%- include('../partials/header', { title: 'Create Account' }) %>
+
+<%
+// default role safe-guard
+const currentRole = (typeof role === 'string' && (role === 'doctor' || role === 'patient')) ? role : 'patient';
+%>
+
+<main class="auth-wrapper" data-initial-role="<%= currentRole %>">
+  <div class="auth-box">
+    <div class="auth-left">
+      <h1>Join DocConnect+</h1>
+      <p class="muted">Create your account to get started.</p>
+      <ul class="feature-list">
+        <li>Book appointments in seconds</li>
+        <li>Track visits & reminders</li>
+        <li>For Doctors: manage slots & patients</li>
+      </ul>
+    </div>
+
+    <div class="auth-right">
+      <h2 class="auth-title"><i class="fas fa-user-plus"></i> Create account</h2>
+
+      <% if (typeof error !== 'undefined' && error) { %>
+        <div class="alert error"><%= error %></div>
+      <% } %>
+
+      <form action="/auth/signup" method="POST" class="auth-form" novalidate>
+        <input type="hidden" name="role" id="roleInput" value="<%= currentRole %>">
+
+        <div class="inline">
+          <div>Sign up as:</div>
+          <div class="role-switch">
+            <a href="#" class="chip" data-role="patient">Patient</a>
+            <a href="#" class="chip" data-role="doctor">Doctor</a>
+          </div>
+        </div>
+
+        <div class="field">
+          <label>Full name</label>
+          <input type="text" name="name" required>
+        </div>
+
+        <div class="field">
+          <label>Phone</label>
+          <input type="tel" name="phone" pattern="[0-9]{10}" placeholder="9876543210" required>
+        </div>
+
+        <!-- Hidden by default; JS will show when role=doctor -->
+        <div id="specField" class="field" style="display:none">
+          <label>Specialization (Doctors)</label>
+          <input type="text" name="specialization" placeholder="Cardiology / Dermatology …">
+        </div>
+
+        <div class="field">
+          <label>Email</label>
+          <input type="email" name="email" required>
+        </div>
+
+        <div class="grid-2">
+          <div class="field">
+            <label>Password</label>
+            <input type="password" name="password" minlength="6" required>
+          </div>
+          <div class="field">
+            <label>Confirm password</label>
+            <input type="password" name="confirm" minlength="6" required>
+          </div>
+        </div>
+
+        <button class="btn btn-primary w-100" type="submit">Create account</button>
+      </form>
+
+      <div class="switch">
+        Already have an account? <a href="/auth/login?role=<%= currentRole %>">Sign in</a>
+      </div>
+    </div>
+  </div>
+</main>
+
+<%- include('../partials/footer') %>
+
+<style>
+  .auth-wrapper{display:flex;justify-content:center;padding:2rem 1rem}
+  .auth-box{width:min(1000px,96vw);display:grid;grid-template-columns:1.1fr .9fr;background:#fff;border:1px solid #eee;border-radius:16px;box-shadow:0 10px 30px rgba(0,0,0,.06);overflow:hidden}
+  @media (max-width:900px){.auth-box{grid-template-columns:1fr}}
+  .auth-left{background:linear-gradient(160deg,#e8f5ff 0,#f7fbff 60%);padding:2rem}
+  .auth-left .muted{color:#4b5563;margin:.25rem 0 1rem}
+  .feature-list{margin:0;padding-left:1rem;line-height:1.8}
+  .auth-right{padding:2rem}
+  .auth-title{margin:0 0 1rem}
+  .field{display:flex;flex-direction:column;gap:.35rem;margin:.55rem 0}
+  .field input{padding:.65rem .75rem;border:1px solid #e5e7eb;border-radius:10px}
+  .field input:focus{border-color:#4f46e5;box-shadow:0 0 0 3px rgba(79,70,229,.15);outline:none}
+  .grid-2{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+  .btn{display:inline-flex;align-items:center;gap:.5rem;border:0;border-radius:10px;padding:.7rem 1rem;cursor:pointer}
+  .btn-primary{background:#4f46e5;color:#fff}
+  .w-100{width:100%}
+  .alert.error{background:#fee2e2;border:1px solid #fecaca;color:#991b1b;padding:.6rem .8rem;border-radius:10px;margin:.5rem 0}
+  .switch{margin-top:1rem}
+  .chip{display:inline-block;padding:.25rem .6rem;border:1px solid #e5e7eb;border-radius:999px;text-decoration:none;color:#111;margin-left:.25rem}
+  .chip.active{background:#111;color:#fff;border-color:#111}
+</style>
+
+<script>
+  (function(){
+    // elements
+    const wrapper = document.querySelector('main.auth-wrapper');
+    const initialRole = wrapper?.dataset?.initialRole || 'patient';
+    const roleInput = document.getElementById('roleInput');
+    const chips = Array.from(document.querySelectorAll('.role-switch .chip'));
+    const specField = document.getElementById('specField');
+
+    function applyRole(role){
+      roleInput.value = role;
+      chips.forEach(c => c.classList.toggle('active', c.dataset.role === role));
+      if (role === 'doctor') {
+        specField.style.display = '';
+      } else {
+        specField.style.display = 'none';
+      }
+    }
+
+    // init with server-provided role
+    applyRole(initialRole);
+
+    // events
+    chips.forEach(c => c.addEventListener('click', (e) => {
+      e.preventDefault();
+      applyRole(c.dataset.role);
+    }));
+  })();
+</script>
+<style>
+  body {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  main {
+    flex: 1; /* pushes footer to bottom */
+  }
+</style>

@@ -1,28 +1,332 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= title %> - DocConnect+</title>
-    <link rel="stylesheet" href="/css/style.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title><%= title %> - DocConnect+</title>
+
+  <link rel="stylesheet" href="/css/style.css" />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet" />
+
+  <style>
+    /* ✅ NAVBAR BASE */
+    .navbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      background: #fff;
+      border-bottom: 1px solid #eee;
+    }
+
+    /* ✅ Flex container */
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: .65rem 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    /* ✅ Logo */
+    .nav-logo .brand {
+      font-weight: 700;
+      text-decoration: none;
+      color: #111;
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+      font-size: 1.15rem;
+    }
+
+    /* ✅ MENU ITEMS (middle-right) */
+    .nav-menu {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-left: auto;
+    }
+
+    /* ✅ AUTH ITEMS (right side) */
+    .nav-auth {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      margin-left: 1rem;
+    }
+
+    /* ✅ LAST RIGHT → BELL ICON */
+    .notif-wrap {
+      margin-left: 1rem;
+      position: relative;
+    }
+
+    /* ============================================
+       ✅ Top Navigation Buttons
+    ==============================================*/
+    .nav-link {
+      color: #374151;
+      text-decoration: none;
+      padding: .35rem .6rem;
+      border-radius: 8px;
+      font-weight: 500;
+    }
+    .nav-link:hover { background: #f3f4f6; }
+
+    .btn-nav-outline {
+      border: 1px solid #e5e7eb;
+      background: #fff;
+      padding: .35rem .7rem;
+      border-radius: 8px;
+      text-decoration: none;
+      color: #111;
+      font-weight: 500;
+    }
+
+    .btn-nav-filled {
+      background: #111;
+      color: #fff;
+      padding: .35rem .7rem;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .hello { color: #374151; }
+
+    /* ============================================
+       ✅ Bell Icon Better UI
+    ==============================================*/
+    .icon-bell {
+      border: 1px solid #d1d5db;
+      background: #fff;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      position: relative;
+    }
+
+    .notif-badge {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      background: #dc2626;
+      color: #fff;
+      padding: 2px 6px;
+      border-radius: 999px;
+      font-size: .68rem;
+      display: none;
+    }
+
+    /* ============================================
+       ✅ Dropdown (Improved Visibility)
+    ==============================================*/
+    .notif-dd {
+      position: absolute;
+      right: 0;
+      top: 48px;
+      width: min(380px, 92vw);
+      background: #ffffff;
+      border: 1px solid #d1d5db;
+      border-radius: 12px;
+      box-shadow: 0px 10px 35px rgba(0,0,0,0.20);
+      display: none;
+      overflow: hidden;
+      animation: fadeIn .15s ease-out;
+    }
+    .notif-dd.show { display: block; }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-6px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .notif-head {
+      padding: .7rem .9rem;
+      border-bottom: 1px solid #e5e7eb;
+      font-weight: 600;
+      display: flex;
+      justify-content: space-between;
+      background: #f9fafb;
+    }
+
+    .notif-list { max-height: 360px; overflow-y: auto; }
+
+    /* ✅ Each notification item */
+    .notif-item {
+      padding: .75rem .9rem;
+      border-bottom: 1px solid #f1f1f1;
+      background: #f9fafb;
+      cursor: pointer;
+      transition: background .25s ease;
+    }
+    .notif-item:hover { background: #eef2ff; }
+
+    /* ✅ Unread highlight */
+    .notif-item.unread {
+      background: #fff4d6 !important;
+      border-left: 4px solid #fb923c;
+    }
+
+    .notif-title {
+      font-weight: 600;
+      color: #111827;
+      margin-bottom: 3px;
+      display: flex;
+      align-items: center;
+      gap: .5rem;
+    }
+
+    .notif-body {
+      font-size: 14px;
+      color: #374151;
+      margin-bottom: 4px;
+    }
+
+    .notif-meta {
+      font-size: 12px;
+      color: #6b7280;
+      display: flex;
+      justify-content: space-between;
+    }
+
+  </style>
 </head>
+
 <body>
-    <nav class="navbar">
-        <div class="nav-container">
-            <div class="nav-logo">
-                <h2><i class="fas fa-stethoscope"></i> DocConnect+</h2>
-            </div>
-            <div class="nav-menu">
-                <a href="/patient" class="nav-link">
-                    <i class="fas fa-user"></i> Patient
-                </a>
-                <a href="/doctor/dashboard" class="nav-link">
-                    <i class="fas fa-user-md"></i> Doctor
-                </a>
-                <a href="/chatbot" class="nav-link">
-                    <i class="fas fa-robot"></i> Chatbot
-                </a>
-            </div>
+  <nav class="navbar">
+    <div class="nav-container">
+
+      <!-- ✅ LEFT: LOGO -->
+      <div class="nav-logo">
+        <a href="/" class="brand">
+          <i class="fas fa-stethoscope"></i> DocConnect+
+        </a>
+      </div>
+
+      <!-- ✅ MIDDLE-RIGHT: MENU -->
+      <div class="nav-menu">
+        <a href="/patient" class="nav-link"><i class="fas fa-home"></i> Home</a>
+        <a href="/doctor/dashboard" class="nav-link"><i class="fas fa-user-md"></i> Doctor</a>
+        <a href="/chatbot" class="nav-link"><i class="fas fa-robot"></i> Chatbot</a>
+
+        <% if (session?.user && session.user.role === 'patient') { %>
+          <a href="/patient/appointments" class="nav-link">
+            <i class="fas fa-calendar-check"></i> My Appointments
+          </a>
+        <% } %>
+      </div>
+
+      <!-- ✅ RIGHT: Hi User + Logout -->
+      <div class="nav-auth">
+        <% if (!session || !session.user) { %>
+          <a href="/auth/login?role=patient" class="btn-nav-outline">
+            <i class="fas fa-sign-in-alt"></i> Login
+          </a>
+          <a href="/auth/signup?role=patient" class="btn-nav-filled">
+            <i class="fas fa-user-plus"></i> Sign up
+          </a>
+        <% } else { %>
+          <span class="hello">Hi, <%= session.user.name %></span>
+          <form action="/auth/logout" method="POST">
+            <button type="submit" class="btn-nav-outline">
+              <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+          </form>
+        <% } %>
+      </div>
+
+      <!-- ✅ EXTREME RIGHT: BELL -->
+      <% if (session?.user && session.user.role === 'doctor') { %>
+      <div class="notif-wrap" id="notifWrap">
+        <button class="icon-bell" id="bellBtn">
+          <i class="fas fa-bell"></i>
+          <span class="notif-badge" id="notifBadge">0</span>
+        </button>
+
+        <div class="notif-dd" id="notifDd">
+          <div class="notif-head">
+            <span><i class="fas fa-bell"></i> Notifications</span>
+            <a href="/doctor/notifications" class="nav-link" style="padding:0;">Open Page</a>
+          </div>
+
+          <div class="notif-list" id="notifList">
+            <div style="padding:.8rem;color:#777;">Loading…</div>
+          </div>
         </div>
-    </nav>
+      </div>
+      <% } %>
+
+    </div>
+  </nav>
+
+
+  <!-- ✅ Notification Dropdown JS -->
+  <script>
+    const bellBtn = document.getElementById('bellBtn');
+    const notifDd = document.getElementById('notifDd');
+    const notifList = document.getElementById('notifList');
+    const notifBadge = document.getElementById('notifBadge');
+
+    /* Load all notifications */
+    async function loadAll(){
+      const r = await fetch('/doctor/api/notifications');
+      const j = await r.json();
+      if (j.success){
+        notifList.innerHTML = j.notifications.length
+          ? j.notifications.map(n => `
+              <div class="notif-item ${n.is_read ? '' : 'unread'}"
+                   onclick="window.location='/doctor/dashboard?highlight=${n.data?.appointment_id}'">
+
+                <div class="notif-title">
+                  <i class="fas fa-user"></i>
+                  ${n.data.patient_name} booked an appointment
+                </div>
+
+                <div class="notif-body">
+                  Symptoms: ${n.data.symptoms || 'Not specified'}
+                </div>
+
+                <div class="notif-meta">
+                  <span>${n.data.date} • ${n.data.time}</span>
+                </div>
+
+              </div>
+            `).join('')
+          : `<div style="padding:.8rem;color:#888;">No notifications</div>`;
+      }
+    }
+
+    /* Load unread count */
+    async function loadUnread(){
+      const r = await fetch('/doctor/api/notifications?unread=1');
+      const j = await r.json();
+      if (j.success && j.count > 0){
+        notifBadge.textContent = j.count;
+        notifBadge.style.display = "inline-block";
+      } else {
+        notifBadge.style.display = "none";
+      }
+    }
+
+    /* Toggle dropdown */
+    if (bellBtn){
+      bellBtn.addEventListener("click", async ()=>{
+        if (!notifDd.classList.contains("show")) await loadAll();
+        notifDd.classList.toggle("show");
+      });
+
+      document.addEventListener("click", (e)=>{
+        if (!notifDd.contains(e.target) && !bellBtn.contains(e.target)){
+          notifDd.classList.remove("show");
+        }
+      });
+
+      loadUnread();
+      setInterval(loadUnread, 5000);
+    }
+  </script>

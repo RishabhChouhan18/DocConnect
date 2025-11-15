@@ -1,38 +1,28 @@
-<%- include('../partials/header', {title: 'Medical Chatbot'}) %>
+<%- include('../partials/header', { title: 'Medical Chatbot' }) %>
 
 <main class="main-content">
     <div class="page-header">
-        <h1><i class="fas fa-robot"></i> Medical Assistant Chatbot</h1>
-        <p>Describe your symptoms and get doctor recommendations</p>
+        <h1><i class="fas fa-robot"></i> DocConnect Chatbot 🤖</h1>
+        <p>Apne symptoms likho aur main bataunga kaunse doctor available hain 👩‍⚕️</p>
     </div>
 
     <div class="chatbot-container">
         <div class="chat-window" id="chatWindow">
             <div class="chat-message bot-message">
-                <div class="message-avatar">
-                    <i class="fas fa-robot"></i>
-                </div>
+                <div class="message-avatar"><i class="fas fa-robot"></i></div>
                 <div class="message-content">
-                    <p>Hello! I'm your medical assistant. Please describe your symptoms, and I'll recommend the right type of doctor for you.</p>
-                    <small>Note: This is not a substitute for professional medical advice.</small>
+                    <p>Namaste! 😊 Main aapka medical assistant hoon.<br>
+                    Aap apne symptoms likho (jaise: <b>fever aur headache</b>), main bataunga kaunse doctor available hain.</p>
+                    <small>⚠️ Yeh chatbot sirf general guidance deta hai. Actual diagnosis ke liye doctor se milna zaroori hai.</small>
                 </div>
             </div>
         </div>
 
         <div class="chat-input-container">
             <form id="chatForm" class="chat-form">
-                <input type="text" 
-                       id="symptomInput" 
-                       placeholder="Describe your symptoms (e.g., 'fever and headache')" 
-                       required>
-                <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-paper-plane"></i>
-                </button>
+                <input type="text" id="symptomInput" placeholder="Type your symptoms here..." required>
+                <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane"></i></button>
             </form>
-        </div>
-
-        <div class="chatbot-disclaimer">
-            <p><i class="fas fa-exclamation-triangle"></i> <strong>Disclaimer:</strong> This chatbot provides general guidance only. Please consult a qualified doctor for proper diagnosis and treatment.</p>
         </div>
     </div>
 </main>
