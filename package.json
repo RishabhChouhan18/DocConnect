@@ -1,4 +1,7 @@
 {
+  "engines": {
+    "node": "20.17.0"
+  },
   "name": "docconnect-plus",
   "version": "1.0.0",
   "description": "Doctor appointment booking system with chatbot",

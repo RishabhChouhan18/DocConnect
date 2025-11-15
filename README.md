@@ -79,7 +79,7 @@ CSS / JS	Styling & client logic
 Follow these steps:
 
 1️⃣ Clone the repo
-git clone https://github.com/YOUR_USERNAME/DocConnect.git
+git clone https://github.com/RishabhChouhan18/DocConnect
 cd DocConnect
 
 2️⃣ Install dependencies
@@ -95,7 +95,7 @@ DEEPSEEK_API_KEY=your_api_key_here
 
 4️⃣ Start the server
 node server.js
-
+nodemon app.js
 
 or
 
